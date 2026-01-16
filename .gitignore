@@ -175,3 +175,7 @@ local_s3/
 models/
 data/
 projectflow.txt
+credintials.txt
+capstoneenv/
+.idea/
+.DS_Store
