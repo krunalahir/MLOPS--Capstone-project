@@ -179,3 +179,4 @@ credintials.txt
 capstoneenv/
 .idea/
 .DS_Store
+.dvc/
