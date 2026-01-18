@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pickle
+import os
 from sklearn.linear_model import LogisticRegression
 import yaml
 from src.logger import logging
