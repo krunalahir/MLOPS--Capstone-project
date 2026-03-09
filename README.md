@@ -1,7 +1,51 @@
 Capstone-Project
 ==============================
 
-this repo contains end to end mlops implementation
+This is an end-to-end MLOps implementation for a text classification/ML pipeline, built on the Cookiecutter Data Science template.
+
+    Core Components
+
+    ML Pipeline (DVC-managed):
+     1. Data Ingestion → Raw data collection
+     2. Data Preprocessing → Cleaned interim data
+     3. Feature Engineering → Processed features + vectorizer (NLP)
+     4. Model Building → Trained model
+     5. Model Evaluation → Metrics & experiment tracking
+     6. Model Registration → Model registry integration
+
+
+    Tech Stack:
+     - ML Framework: scikit-learn, NLTK (NLP processing)
+     - Experiment Tracking: MLflow
+     - Data Versioning: DVC (with S3 storage)
+     - Orchestration: DVC pipelines
+     - Deployment: Docker + Kubernetes (EKS)
+     - Container Registry: AWS ECR
+     - Task Queue: Celery
+     - Web Framework: Flask (with Gunicorn)
+
+
+    Infrastructure:
+     - Kubernetes deployment with 2 replicas
+     - LoadBalancer service exposing port 5000
+     - AWS integration (S3, ECR)
+     - Secrets management via Kubernetes Secrets
+
+
+    Key Features:
+     - Automated ML pipeline with stage dependencies
+     - Model versioning and registration
+     - Metrics tracking (reports/metrics.json)
+     - Production-ready Flask API deployment
+     - Reproducible environment via requirements.txt
+     - Makefile for common operations (data sync, linting, testing)
+
+
+    Current Configuration:
+     - Test split: 25%
+     - Max features: 50 (TF-IDF/count vectorization)
+
+    This project demonstrates production-grade MLOps practices covering the full lifecycle from data ingestion to deployed model serving.
 
 Project Organization
 ------------
