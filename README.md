@@ -1,4 +1,4 @@
-# MLOps Capstone Project: End-to-End Text Classification Pipeline
+# MLOps Capstone Project: End-to-End Sentiment Analysis
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![DVC](https://img.shields.io/badge/DVC-3.53.0-green.svg)](https://dvc.org/)
@@ -58,7 +58,6 @@ The pipeline processes raw text data through preprocessing, feature engineering,
 - **📦 Model Registry**: Versioned model storage and promotion workflows
 - **🚀 Production Deployment**: Kubernetes-ready with load balancing and auto-scaling
 - **🔐 Secrets Management**: Secure credential handling via Kubernetes Secrets
-- **📈 Monitoring Ready**: Prometheus metrics integration for production monitoring
 
 ### Technical Highlights
 
@@ -104,7 +103,7 @@ The pipeline processes raw text data through preprocessing, feature engineering,
 │                  AWS Cloud Infrastructure               │
 ├─────────────────────────────────────────────────────────┤
 │  ┌─────────────────────────────────────────────────┐   │
-│  │           Kubernetes Cluster (EKS)              │   │
+│  |            Kubernetes Cluster (EKS)              │   │
 │  │  ┌─────────────────────────────────────────┐    │   │
 │  │  │   Flask App Deployment (2 replicas)     │    │   │
 │  │  │   ┌─────────┐  ┌─────────┐             │    │   │
@@ -135,6 +134,7 @@ The pipeline processes raw text data through preprocessing, feature engineering,
 │  └─────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────┘
 ```
+
 
 ---
 
@@ -596,10 +596,6 @@ mlflow ui
 - `reports/metrics.json`: JSON format metrics
 - `reports/experiment_info.json`: Full experiment details
 - MLflow UI: Interactive visualizations and comparisons
-
-### Prometheus Metrics
-
-The application exposes Prometheus metrics for production monitoring:
 
 ```bash
 # Access metrics endpoint
