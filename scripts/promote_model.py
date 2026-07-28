@@ -1,46 +1,96 @@
-# promote model
-
 import os
 import mlflow
 
+def get_model_accuracy(client, model_name, stage):
+    """
+    Get the accuracy of the latest model in a stage.
+    """
+
+    versions = client.get_latest_versions(
+        model_name,
+        stages=[stage]
+    )
+
+    if len(versions) == 0:
+        return None, None
+
+    version = versions[0]
+
+    run = client.get_run(version.run_id)
+
+    accuracy = run.data.metrics.get("accuracy", None)
+
+    return version, accuracy
+
+
 def promote_model():
-    # Set up DagsHub credentials for MLflow tracking
+
     dagshub_token = os.getenv("CAPSTONE_TEST")
-    if not dagshub_token:
-        raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
 
     os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
     os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-    dagshub_url = "https://dagshub.com"
-    repo_owner = "krunalahir"
-    repo_name = "MLOPS--Capstone-project"
-
-    # Set up MLflow tracking URI
-    mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+    mlflow.set_tracking_uri(
+        "https://dagshub.com/krunalahir/MLOPS--Capstone-project.mlflow"
+    )
 
     client = mlflow.MlflowClient()
 
     model_name = "my_model"
-    # Get the latest version in staging
-    latest_version_staging = client.get_latest_versions(model_name, stages=["Staging"])[0].version
 
-    # Archive the current production model
-    prod_versions = client.get_latest_versions(model_name, stages=["Production"])
-    for version in prod_versions:
+    staging_version, staging_acc = get_model_accuracy(
+        client,
+        model_name,
+        "Staging"
+    )
+
+    production_version, production_acc = get_model_accuracy(
+        client,
+        model_name,
+        "Production"
+    )
+
+    # First deployment
+    if production_version is None:
+
         client.transition_model_version_stage(
             name=model_name,
-            version=version.version,
+            version=staging_version.version,
+            stage="Production"
+        )
+
+        print("First production model deployed")
+
+        return
+
+    print(f"Production Accuracy : {production_acc}")
+    print(f"Staging Accuracy    : {staging_acc}")
+
+    if staging_acc > production_acc:
+
+        client.transition_model_version_stage(
+            name=model_name,
+            version=production_version.version,
             stage="Archived"
         )
 
-    # Promote the new model to production
-    client.transition_model_version_stage(
-        name=model_name,
-        version=latest_version_staging,
-        stage="Production"
-    )
-    print(f"Model version {latest_version_staging} promoted to Production")
+        client.transition_model_version_stage(
+            name=model_name,
+            version=staging_version.version,
+            stage="Production"
+        )
+
+        print("New model promoted to Production")
+
+    else:
+
+        print("Current Production model is better.")
+
+        client.transition_model_version_stage(
+            name=model_name,
+            version=staging_version.version,
+            stage="Archived"
+        )
 
 if __name__ == "__main__":
     promote_model()
